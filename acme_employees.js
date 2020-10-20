@@ -1,3 +1,48 @@
+function findEmployeeByName(name, database) {
+  let filteredobj = database.filter((elem) => {
+    return Object.values(elem).includes(name);
+  });
+  return filteredobj[0];
+}
+
+function findManagerFor(employee, database) {
+  let employeeID = employee.managerId;
+  //console.log(employeeID);
+  let manager = database.filter((emp) => {
+    return emp.id === employeeID;
+  });
+  return manager[0];
+}
+
+function findCoworkersFor(employee, database) {
+  let managerID = employee.managerId;
+  //console.log(employeeID);
+  return database.filter((emp) => {
+    return emp.managerId === managerID && emp.name != employee.name;
+  });
+}
+
+function findManagementChainForEmployee(employee, database) {
+  if (Object.keys(employee).includes('managerId')) {
+    let chain = [];
+    let currID = employee.managerId;
+    let emp = employee;
+    let nextemp;
+    while (currID > 0) {
+      nextemp = findManagerFor(emp, database);
+      chain.unshift(nextemp);
+      emp = nextemp;
+      currID--;
+    }
+
+    return chain;
+  } else {
+    return [];
+  }
+}
+
+function generateManagementTree() {}
+
 const employees = [
   { id: 1, name: 'moe' },
   { id: 2, name: 'larry', managerId: 1 },
